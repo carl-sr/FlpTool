@@ -8,7 +8,16 @@ seq:
     type: u1
     enum: dword_event_type
   - id: data
-    type: u4
+    type:
+      switch-on: type
+      cases:
+        _: default
+
+types:
+  default:
+    seq:
+      - id: data
+        type: u4
 
 enums:
   dword_event_type:

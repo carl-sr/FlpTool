@@ -2,13 +2,22 @@ meta:
   id: flp_byte_event
   title: Image Line FL Studio Project Byte Event
   endian: le
-  
+
 seq:
   - id: type
     type: u1
     enum: byte_event_type
   - id: data
-    type: u1
+    type:
+      switch-on: type
+      cases:
+        _: default
+
+types:
+  default:
+    seq:
+      - id: data
+        type: u1
 
 enums:
   byte_event_type:

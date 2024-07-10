@@ -7,10 +7,29 @@ seq:
   - id: type
     type: u1
     enum: text_event_type
-  - id: size
-    type: u1
   - id: data
-    size: size
+    type:
+      switch-on: type
+      cases:
+        'text_event_type::flp_version': flp_version
+        _: default
+
+types:
+  flp_version:
+    seq:
+      - id: size
+        type: u1
+      - id: version
+        type: str
+        encoding: ASCII
+        size: size - 1
+
+  default:
+    seq:
+      - id: size
+        type: u1
+      - id: data
+        size: size
 
 enums:
   text_event_type:
