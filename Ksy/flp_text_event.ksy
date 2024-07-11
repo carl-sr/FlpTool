@@ -2,6 +2,8 @@ meta:
   id: flp_text_event
   title: Image Line FL Studio Project Text Event
   endian: le
+  imports:
+    - /common/vlq_base128_le
 
 seq:
   - id: type
@@ -11,25 +13,25 @@ seq:
     type:
       switch-on: type
       cases:
-        'text_event_type::flp_version': flp_version
+        # 'text_event_type::flp_version': flp_version
         _: default
 
 types:
-  flp_version:
-    seq:
-      - id: size
-        type: u1
-      - id: version
-        type: str
-        encoding: ASCII
-        size: size - 1
+  # flp_version:
+  #   seq:
+  #     - id: size
+  #       type: u1
+  #     - id: version
+  #       type: str
+  #       encoding: ASCII
+  #       size: size - 1
 
   default:
     seq:
       - id: size
-        type: u1
+        type: vlq_base128_le
       - id: data
-        size: size
+        size: size.value
 
 enums:
   text_event_type:

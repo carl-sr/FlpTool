@@ -30,3 +30,6 @@
 *.exe
 *.out
 *.app
+/Ksy/Build/
+/Builds/
+/.idea/
