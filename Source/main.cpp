@@ -2,7 +2,7 @@
 #include <iostream>
 #include <fstream>
 
-#include "FlpEventReader.h"
+#include "Flp/FlpEventReader.h"
 
 int main()
 {

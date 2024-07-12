@@ -4,16 +4,26 @@ set(PROJECT_NAME "FlpTool")
 
 project(${PROJECT_NAME} VERSION 1.0)
 
+set(CMAKE_CXX_STANDARD 20)
+
+#--------------------------------------------------------------------------------
+# lib
+set(FlpSourceFiles
+        Source/Flp/Flp.h
+        Source/Flp/Flp.cpp
+        Source/Flp/FlpEventReader.h
+        Source/Flp/FlpEventReader.cpp
+        Source/Flp/FlpTypes.h
+        Source/Flp/FlpTypes.cpp
+)
+
+add_library(Flp STATIC ${FlpSourceFiles})
+
+
 #--------------------------------------------------------------------------------
 # command line tool
 set(SourceFiles
         Source/main.cpp
-        Source/Flp.h
-        Source/Flp.cpp
-        Source/FlpEventReader.h
-        Source/FlpEventReader.cpp
-        Source/FlpTypes.h
-        Source/FlpTypes.cpp
 )
 
 #--------------------------------------------------------------------------------
@@ -31,6 +41,7 @@ set_property(TARGET ${PROJECT_NAME}_Tests PROPERTY CXX_STANDARD 20)
 target_link_libraries(${PROJECT_NAME}_Tests
         PUBLIC
         gtest
+        Flp
 )
 
 # todo: fix mismatch
