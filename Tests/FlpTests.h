@@ -1,11 +1,13 @@
-#include <gtest/gtest.h>
+#pragma once
 
 //--------------------------------------------------------------------------------
 
+#include <gtest/gtest.h>
 #include "Flp/FlpEventReader.h"
 #include <fstream>
 #include <ranges>
 #include <sstream>
+#include <array>
 
 //--------------------------------------------------------------------------------
 
@@ -217,6 +219,39 @@ TEST(FlpEventReader, ReadEvents)
     flp::FlpEventReader flp{ file };
 
     EXPECT_TRUE(flp.hasEvents());
+}
+
+//--------------------------------------------------------------------------------
+
+TEST(FlpEventReader, VariableLengthBit)
+{
+    struct Case
+    {
+        std::vector<std::uint8_t> bits;
+        std::size_t expect;
+    };
+
+    constexpr std::uint8_t Mask{ 0b1 << 7 }; // highest beat means the number continues
+
+    std::vector<Case> testCases{
+        { { 0x00, 0x02 }, 0 },
+        { { 0x01, 0x02 }, 1 },
+        { { 0x01 | (0b1 << 7), 0x00 }, 1 },
+        { { 0x01 | (0b1 << 7), 0x01 | (0b1 << 7), 0x01 }, 3 },
+        { { 0x02 | (0b1 << 7), 0x02 | (0b1 << 7), 0x02 }, 6 },
+    };
+
+    for (const auto& testCase: testCases)
+    {
+        
+        std::stringstream ss;
+
+        for (const auto i : testCase.bits)
+            ss << i;
+
+        std::size_t result{ flp::ReadVarDataLength(ss)};
+        EXPECT_EQ(result, testCase.expect);
+    }
 }
 
 //--------------------------------------------------------------------------------

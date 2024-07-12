@@ -23,11 +23,38 @@ int main(int argc, char **argv) {
     flp::FlpEventReader flp{ file };
 
     EXPECT_TRUE(flp.hasEvents());
-       
+
+    while (flp.hasEvents())
+    {
+        auto e = flp.getNextEvent();
+
+        switch(flp::GetEventSize(e.getType()))
+        {
+        case flp::FlpEventSize::Byte:
+            printf("0x%02x (BYTE): 0x%02x\n", e.getType(), e.getDataByte());
+            break;
+        case flp::FlpEventSize::Word:
+            printf("0x%02x (WORD): 0x%04x\n", e.getType(), e.getDataWord());
+            break;
+        case flp::FlpEventSize::Dword:
+            printf("0x%02x (DWORD): 0x%08x\n", e.getType(), e.getDataDword());
+            break;
+        case flp::FlpEventSize::Variable:
+        {
+            printf("0x%02x (VAR): ", e.getType());
+            for (auto u : e.getDataVariable())
+                printf("0x%02x ", u);
+            printf("\n");
+            break;
+        }
+
+        default:
+            assert(false);
+            break;
+        }
+    }
     
     return RUN_ALL_TESTS();
-
-
 }
 
 //--------------------------------------------------------------------------------

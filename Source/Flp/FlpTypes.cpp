@@ -26,12 +26,7 @@ bool flp::FLdt::isValid() const
 
 bool flp::FlpTypeMatchesSize(FlpEventType type, FlpEventSize size)
 {
-    const auto u8Type{ static_cast<std::uint8_t>(type) };
-    const auto u8Size{ static_cast<std::uint8_t>(size) };
-
-    auto asdf{ u8Type & u8Size };
-
-    return (u8Type & u8Size) == u8Size;
+    return GetEventSize(type) == size;
 }
 
 // --------------------------------------------------------------------------------
@@ -42,6 +37,23 @@ flp::FlpEventSize flp::GetEventSize(FlpEventType type)
     u8Type &= 0b11 << 6;
 
     return static_cast<FlpEventSize>(u8Type);
+}
+
+// --------------------------------------------------------------------------------
+
+std::size_t flp::ReadVarDataLength(std::istream& read)
+{
+    constexpr std::uint8_t Mask{ 0b1 << 7 }; // highest beat means the number continues
+
+    std::size_t r{ 0 };
+    std::uint8_t u{ 0 };
+    do
+    {
+        read.read(reinterpret_cast<char*>(&u), sizeof(u));
+        r += u & ~Mask;
+    } while ((u & Mask) && !read.eof());
+
+    return r;
 }
 
 // --------------------------------------------------------------------------------

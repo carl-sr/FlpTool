@@ -1,4 +1,5 @@
 #include "FlpEventReader.h"
+#include "FlpTypes.h"
 #include <cassert>
 
 // --------------------------------------------------------------------------------
@@ -70,9 +71,19 @@ std::vector<std::uint8_t> flp::FlpEventReader::Event::getDataVariable()
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Variable) };
     assert(b);
 
+    std::vector<std::uint8_t> r;
+    auto size{ ReadVarDataLength(m_read) };
 
+    r.reserve(size);
 
-    return {};
+    for (std::size_t i = 0; i < size; ++i)
+    {
+        std::uint8_t u{ 0 };
+        m_read.read(reinterpret_cast<char*>(&u), sizeof(u));
+        r.push_back(u);
+    }
+
+    return r;
 }
 
 // --------------------------------------------------------------------------------

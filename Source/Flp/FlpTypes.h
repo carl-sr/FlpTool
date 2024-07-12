@@ -5,6 +5,7 @@
 #include "Flp.h"
 #include <cstdint>
 #include <istream>
+#include <sstream>
 
 // --------------------------------------------------------------------------------
 
@@ -224,6 +225,10 @@ bool FlpTypeMatchesSize(FlpEventType type, FlpEventSize size);
 // --------------------------------------------------------------------------------
 
 FlpEventSize GetEventSize(FlpEventType type);
+
+// --------------------------------------------------------------------------------
+
+std::size_t ReadVarDataLength(std::istream& read);
 
 // --------------------------------------------------------------------------------
 
