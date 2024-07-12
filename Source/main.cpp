@@ -9,4 +9,10 @@ int main()
 	std::cout << file.is_open() << std::endl;
 
 	Flp flp{ file };
+
+	while(flp.hasEvents())
+	{
+		std::cout << (std::uint8_t)flp.getNextEvent().getType() << std::endl;
+	}
+
 }
