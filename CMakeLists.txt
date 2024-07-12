@@ -18,7 +18,7 @@ set(FlpSourceFiles
 )
 
 add_library(Flp STATIC ${FlpSourceFiles})
-
+target_compile_options(Flp PUBLIC "-MTd")
 
 #--------------------------------------------------------------------------------
 # command line tool
@@ -38,6 +38,7 @@ set(TestSourceFiles
 
 add_executable(${PROJECT_NAME}_Tests ${TestSourceFiles})
 set_property(TARGET ${PROJECT_NAME}_Tests PROPERTY CXX_STANDARD 20)
+target_include_directories(${PROJECT_NAME}_Tests PUBLIC "Source")
 
 target_link_libraries(${PROJECT_NAME}_Tests
         PUBLIC

@@ -39,8 +39,6 @@ flp::FlpEventSize flp::GetEventSize(FlpEventType type)
     auto u8Type{ static_cast<std::uint8_t>(type) };
     u8Type &= 0b11 << 6;
 
-    // std::ranges::count_if({ FlpEventDataSize::Byte, FlpEventDataSize::Word, FlpEventDataSize::Dword, FlpEventDataSize::Variable }, [u8Type](const std::uint8_t t) { return t == u8Type; });
-
     return static_cast<FlpEventSize>(u8Type);
 }
 
