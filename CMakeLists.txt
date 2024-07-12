@@ -10,7 +10,6 @@ set(SourceFiles
         Source/Flp.cpp
         Source/FlpTypes.h
         Source/FlpTypes.cpp
-        Source/Flp.h
 )
 
 add_executable(${PROJECT_NAME} ${SourceFiles})
