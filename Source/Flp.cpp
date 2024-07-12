@@ -28,6 +28,8 @@ FlpEventType Flp::Event::getType() const
 
 std::uint8_t Flp::Event::getDataByte()
 {
+    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Byte) };
+    assert(b);
     return 0;
 }
 
@@ -35,6 +37,8 @@ std::uint8_t Flp::Event::getDataByte()
 
 std::uint16_t Flp::Event::getDataWord()
 {
+    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Word) };
+    assert(b);
     return 0;
 }
 
@@ -42,6 +46,8 @@ std::uint16_t Flp::Event::getDataWord()
 
 std::uint32_t Flp::Event::getDataDword()
 {
+    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Dword) };
+    assert(b);
     return 0;
 }
 
@@ -49,6 +55,8 @@ std::uint32_t Flp::Event::getDataDword()
 
 std::vector<std::uint8_t> Flp::Event::getDataVariable()
 {
+    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Variable) };
+    assert(b);
     return {};
 }
 

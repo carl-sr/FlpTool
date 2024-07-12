@@ -217,3 +217,9 @@ enum class FlpEventType : std::uint8_t
 bool FlpTypeMatchesSize(FlpEventType type, FlpEventSize size);
 
 // --------------------------------------------------------------------------------
+
+FlpEventSize GetEventSize(FlpEventType type);
+
+// --------------------------------------------------------------------------------
+
+

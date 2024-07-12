@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iostream>
 #include <fstream>
 
@@ -12,7 +13,24 @@ int main()
 
 	while(flp.hasEvents())
 	{
-		std::cout << (std::uint8_t)flp.getNextEvent().getType() << std::endl;
-	}
+		auto e{ flp.getNextEvent() };
 
+		switch(GetEventSize(e.getType()))
+		{
+		case FlpEventSize::Byte:
+			std::cout << e.getDataByte() << std::endl;
+			break;
+		case FlpEventSize::Word:
+			std::cout << e.getDataWord() << std::endl;
+			break;
+		case FlpEventSize::Dword:
+			std::cout << e.getDataDword() << std::endl;
+			break;
+		case FlpEventSize::Variable:
+			// std::cout << e.getDataVariable() << std::endl;
+			break;
+		default:
+			assert(false);
+		}
+	}
 }
