@@ -16,25 +16,27 @@ set(SourceFiles
         Source/FlpTypes.cpp
 )
 
-add_executable(${PROJECT_NAME} ${SourceFiles})
-set_property(TARGET ${PROJECT_NAME} PROPERTY CXX_STANDARD 20)
-
 #--------------------------------------------------------------------------------
 # tests
 enable_testing()
+add_subdirectory(External/googletest)
 
 set(TestSourceFiles
         Tests/main.cpp
 )
 
-add_subdirectory(External/googletest)
 add_executable(${PROJECT_NAME}_Tests ${TestSourceFiles})
 set_property(TARGET ${PROJECT_NAME}_Tests PROPERTY CXX_STANDARD 20)
 
-target_compile_definitions(${PROJECT_NAME}_Tests INTERFACE $<TARGET_PROPERTY:${PROJECT_NAME},INTERFACE_COMPILE_DEFINITIONS>)
-target_include_directories(${PROJECT_NAME}_Tests INTERFACE $<TARGET_PROPERTY:${PROJECT_NAME},INCLUDE_DIRECTORIES>)
-
 target_link_libraries(${PROJECT_NAME}_Tests
-        PRIVATE
+        PUBLIC
         gtest
 )
+
+# todo: fix mismatch
+# mismatch detected for 'RuntimeLibrary'
+# >>> CMakeFiles/FlpTool_Tests.dir/Tests/main.cpp.obj has value MDd_DynamicDebug
+# >>> gtest.lib(gtest-all.cc.obj) has value MTd_StaticDebug
+#
+# this works for msvc:
+target_compile_options(${PROJECT_NAME}_Tests PUBLIC "-MTd")
