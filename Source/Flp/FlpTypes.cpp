@@ -29,7 +29,9 @@ bool flp::FlpTypeMatchesSize(FlpEventType type, FlpEventSize size)
     const auto u8Type{ static_cast<std::uint8_t>(type) };
     const auto u8Size{ static_cast<std::uint8_t>(size) };
 
-    return (u8Type & u8Size) == u8Type;
+    auto asdf{ u8Type & u8Size };
+
+    return (u8Type & u8Size) == u8Size;
 }
 
 // --------------------------------------------------------------------------------

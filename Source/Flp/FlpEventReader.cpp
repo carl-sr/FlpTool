@@ -30,7 +30,11 @@ std::uint8_t flp::FlpEventReader::Event::getDataByte()
 {
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Byte) };
     assert(b);
-    return 0;
+
+    std::uint8_t r{ 0 };
+    m_read.read(reinterpret_cast<char*>(&r), sizeof(r));
+
+    return r;
 }
 
 // --------------------------------------------------------------------------------
@@ -39,7 +43,11 @@ std::uint16_t flp::FlpEventReader::Event::getDataWord()
 {
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Word) };
     assert(b);
-    return 0;
+
+    std::uint16_t r{ 0 };
+    m_read.read(reinterpret_cast<char*>(&r), sizeof(r));
+
+    return r;
 }
 
 // --------------------------------------------------------------------------------
@@ -48,7 +56,11 @@ std::uint32_t flp::FlpEventReader::Event::getDataDword()
 {
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Dword) };
     assert(b);
-    return 0;
+
+    std::uint32_t r{ 0 };
+    m_read.read(reinterpret_cast<char*>(&r), sizeof(r));
+
+    return r;
 }
 
 // --------------------------------------------------------------------------------
@@ -57,6 +69,9 @@ std::vector<std::uint8_t> flp::FlpEventReader::Event::getDataVariable()
 {
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Variable) };
     assert(b);
+
+
+
     return {};
 }
 
