@@ -8,6 +8,8 @@ set(SourceFiles
         Source/main.cpp
         Source/Flp.h
         Source/Flp.cpp
+        Source/FlpEventReader.h
+        Source/FlpEventReader.cpp
         Source/FlpTypes.h
         Source/FlpTypes.cpp
 )

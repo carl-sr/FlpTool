@@ -7,7 +7,7 @@
 
 // --------------------------------------------------------------------------------
 
-bool FLhd::isValid() const
+bool flp::FLhd::isValid() const
 {
     const auto current{ std::string_view{ magic, sizeof(magic) } };
     const bool magicValid{ current == "FLhd" };
@@ -16,7 +16,7 @@ bool FLhd::isValid() const
 
 // --------------------------------------------------------------------------------
 
-bool FLdt::isValid() const
+bool flp::FLdt::isValid() const
 {
     const bool magicValid{ std::string_view{ magic, sizeof(magic) } == "FLdt" };
     return magicValid;
@@ -24,7 +24,7 @@ bool FLdt::isValid() const
 
 // --------------------------------------------------------------------------------
 
-bool FlpTypeMatchesSize(FlpEventType type, FlpEventSize size)
+bool flp::FlpTypeMatchesSize(FlpEventType type, FlpEventSize size)
 {
     const auto u8Type{ static_cast<std::uint8_t>(type) };
     const auto u8Size{ static_cast<std::uint8_t>(size) };
@@ -34,7 +34,7 @@ bool FlpTypeMatchesSize(FlpEventType type, FlpEventSize size)
 
 // --------------------------------------------------------------------------------
 
-FlpEventSize GetEventSize(FlpEventType type)
+flp::FlpEventSize flp::GetEventSize(FlpEventType type)
 {
     auto u8Type{ static_cast<std::uint8_t>(type) };
     u8Type &= 0b11 << 6;
