@@ -34,12 +34,16 @@ public:
 
         bool isExpired() const;
 
+        ~Event();
+
     private:
         friend class FlpEventReader;
 
         Event(std::istream &read);
 
+        void skipBytes(std::size_t byteCount);
 
+        bool m_isConsumed{ false };
         std::istream &m_read;
         const FlpEventType m_type;
     };

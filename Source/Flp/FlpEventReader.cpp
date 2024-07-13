@@ -29,6 +29,9 @@ flp::FlpEventType flp::FlpEventReader::Event::getType() const
 
 std::uint8_t flp::FlpEventReader::Event::getDataByte()
 {
+    assert(!m_isConsumed);
+    m_isConsumed = true;
+
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Byte) };
     assert(b);
 
@@ -42,6 +45,9 @@ std::uint8_t flp::FlpEventReader::Event::getDataByte()
 
 std::uint16_t flp::FlpEventReader::Event::getDataWord()
 {
+    assert(!m_isConsumed);
+    m_isConsumed = true;
+
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Word) };
     assert(b);
 
@@ -55,6 +61,9 @@ std::uint16_t flp::FlpEventReader::Event::getDataWord()
 
 std::uint32_t flp::FlpEventReader::Event::getDataDword()
 {
+    assert(!m_isConsumed);
+    m_isConsumed = true;
+
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Dword) };
     assert(b);
 
@@ -68,6 +77,9 @@ std::uint32_t flp::FlpEventReader::Event::getDataDword()
 
 std::vector<std::uint8_t> flp::FlpEventReader::Event::getDataVariable()
 {
+    assert(!m_isConsumed);
+    m_isConsumed = true;
+
     const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Variable) };
     assert(b);
 
@@ -95,10 +107,46 @@ bool flp::FlpEventReader::Event::isExpired() const
 
 // --------------------------------------------------------------------------------
 
+flp::FlpEventReader::Event::~Event()
+{
+    if (m_isConsumed)
+        return;
+
+    switch (GetEventSize(m_type))
+    {
+    case FlpEventSize::Byte:
+        skipBytes(1);
+        break;
+    case FlpEventSize::Word:
+        skipBytes(2);
+        break;
+    case FlpEventSize::Dword:
+        skipBytes(4);
+        break;
+    case FlpEventSize::Variable:
+        skipBytes(ReadVarDataLength(m_read));
+        break;
+    default:
+        assert(false);
+        break;
+    }
+}
+
+// --------------------------------------------------------------------------------
+
 flp::FlpEventReader::Event::Event(std::istream& read)
     : m_read(read)
     , m_type([&read]() { char u; read.get(u); return static_cast<FlpEventType>(u); }())
 {
+}
+
+// --------------------------------------------------------------------------------
+
+void flp::FlpEventReader::Event::skipBytes(std::size_t byteCount)
+{
+    int pos = m_read.tellg();
+    m_read.seekg(pos + static_cast<int>(byteCount), std::ios::beg);
+    return;
 }
 
 // --------------------------------------------------------------------------------
@@ -113,7 +161,7 @@ flp::FlpEventReader::Event flp::FlpEventReader::getNextEvent()
 
 bool flp::FlpEventReader::hasEvents()
 {
-    return !m_read.eof();
+    return m_read.peek() != EOF;
 }
 
 // --------------------------------------------------------------------------------

@@ -19,14 +19,58 @@ int main(int argc, char **argv) {
     //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
     //     - Fruity Limiter(default)
 
-    std::ifstream file{ flilePath };
+    std::ifstream file{ flilePath, std::ios::beg | std::ios::binary };
+
+    file.seekg(0, std::ios::end);
+    int fileSize = file.tellg();
+    file.seekg(0, std::ios::beg);
+    
     flp::FlpEventReader flp{ file };
 
     EXPECT_TRUE(flp.hasEvents());
 
+    int eventCount{ 0 };
+
+    using varType = std::variant<std::uint8_t, std::uint16_t, std::uint32_t, std::vector<std::uint8_t>>;
+
+
+    std::vector<std::pair<flp::FlpEventType, varType>> recordedEvents;
+
+    
     while (flp.hasEvents())
     {
+        ++eventCount;
+
+        if (26024 == eventCount)
+            printf("break");
+
         auto e = flp.getNextEvent();
+        
+
+        switch (flp::GetEventSize(e.getType()))
+        {
+        case flp::FlpEventSize::Byte:
+            recordedEvents.push_back(std::make_pair(e.getType(), e.getDataByte()));
+            break;
+        case flp::FlpEventSize::Word:
+            recordedEvents.push_back(std::make_pair(e.getType(), e.getDataWord()));
+            break;
+        case flp::FlpEventSize::Dword:
+            recordedEvents.push_back(std::make_pair(e.getType(), e.getDataDword()));
+            break;
+        case flp::FlpEventSize::Variable:
+            recordedEvents.push_back(std::make_pair(e.getType(), e.getDataVariable()));
+            break;
+
+        default:
+            assert(false);
+            break;
+        }
+        
+        continue;
+
+        // if (e.getType() == flp::FlpEventType::PluginParams)
+        //     printf("break");
 
         switch(flp::GetEventSize(e.getType()))
         {
@@ -47,12 +91,16 @@ int main(int argc, char **argv) {
             printf("\n");
             break;
         }
-
+        
         default:
             assert(false);
             break;
         }
     }
+
+    EXPECT_TRUE(file.eof());
+
+    EXPECT_EQ(eventCount, 26023); // says kaitai
     
     return RUN_ALL_TESTS();
 }

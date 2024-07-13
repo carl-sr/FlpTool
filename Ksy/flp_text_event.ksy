@@ -2,8 +2,6 @@ meta:
   id: flp_text_event
   title: Image Line FL Studio Project Text Event
   endian: le
-  imports:
-    - /common/vlq_base128_le
 
 seq:
   - id: type
@@ -26,10 +24,42 @@ types:
   #       encoding: ASCII
   #       size: size - 1
 
+  # sorta ripped from vlq_base128_le
+  # todo fix the instances.value.value its super ugly
+  bit_group:
+    seq:
+      - id: has_next
+        type: b1
+        doc: If true, then we have more bytes to read
+      - id: value
+        type: b7
+        doc: The 7-bit numeric value chunk of this group
+
+  variable_length:
+    seq:
+      - id: bit_groups
+        type: bit_group
+        repeat: until
+        repeat-until: not _.has_next
+
+    instances:
+      len:
+        value: bit_groups.size
+      value:
+        value: |
+          (bit_groups[0].value
+          + (len >= 2 ? bit_groups[1].value : 0)
+          + (len >= 3 ? bit_groups[2].value : 0)
+          + (len >= 4 ? bit_groups[3].value : 0)
+          + (len >= 5 ? bit_groups[4].value : 0)
+          + (len >= 6 ? bit_groups[5].value : 0)
+          + (len >= 7 ? bit_groups[6].value : 0)
+          + (len >= 8 ? bit_groups[7].value : 0))
+
   default:
     seq:
       - id: size
-        type: vlq_base128_le
+        type: variable_length
       - id: data
         size: size.value
 
