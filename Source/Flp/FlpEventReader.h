@@ -6,6 +6,7 @@
 #include "FlpTypes.h"
 #include <istream>
 #include <vector>
+#include <variant>
 
 // --------------------------------------------------------------------------------
 
@@ -50,6 +51,12 @@ public:
 
     Event getNextEvent();
     bool hasEvents();
+
+    static void PrintAllEvents(FlpEventReader& reader);
+
+    using EventVariantType = std::variant<std::uint8_t, std::uint16_t, std::uint32_t, std::vector<std::uint8_t>>;
+    using EventVariantList = std::vector<std::pair<flp::FlpEventType, EventVariantType>>;
+    EventVariantList GetEventVariantList(FlpEventReader& reader);
 
 private:
     std::istream &m_read;

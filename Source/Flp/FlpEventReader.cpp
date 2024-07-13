@@ -165,3 +165,72 @@ bool flp::FlpEventReader::hasEvents()
 }
 
 // --------------------------------------------------------------------------------
+
+void flp::FlpEventReader::PrintAllEvents(FlpEventReader& reader)
+{
+    while (reader.hasEvents())
+    {
+        auto e = reader.getNextEvent();
+
+        switch (flp::GetEventSize(e.getType()))
+        {
+        case flp::FlpEventSize::Byte:
+            printf("0x%02x (BYTE): 0x%02x\n", e.getType(), e.getDataByte());
+            break;
+        case flp::FlpEventSize::Word:
+            printf("0x%02x (WORD): 0x%04x\n", e.getType(), e.getDataWord());
+            break;
+        case flp::FlpEventSize::Dword:
+            printf("0x%02x (DWORD): 0x%08x\n", e.getType(), e.getDataDword());
+            break;
+        case flp::FlpEventSize::Variable:
+        {
+            printf("0x%02x (VAR): ", e.getType());
+            for (auto u : e.getDataVariable())
+                printf("0x%02x ", u);
+            printf("\n");
+            break;
+        }
+
+        default:
+            assert(false);
+            break;
+        }
+    }
+}
+
+// --------------------------------------------------------------------------------
+
+flp::FlpEventReader::EventVariantList flp::FlpEventReader::GetEventVariantList(FlpEventReader& reader)
+{
+    EventVariantList events;
+
+    while (reader.hasEvents())
+    {
+        auto e = reader.getNextEvent();
+
+        switch (flp::GetEventSize(e.getType()))
+        {
+        case flp::FlpEventSize::Byte:
+            events.push_back(std::make_pair(e.getType(), e.getDataByte()));
+            break;
+        case flp::FlpEventSize::Word:
+            events.push_back(std::make_pair(e.getType(), e.getDataWord()));
+            break;
+        case flp::FlpEventSize::Dword:
+            events.push_back(std::make_pair(e.getType(), e.getDataDword()));
+            break;
+        case flp::FlpEventSize::Variable:
+            events.push_back(std::make_pair(e.getType(), e.getDataVariable()));
+            break;
+
+        default:
+            assert(false);
+            break;
+        }
+    }
+
+    return events;
+}
+
+// --------------------------------------------------------------------------------
