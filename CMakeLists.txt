@@ -11,8 +11,8 @@ set(CMAKE_CXX_STANDARD 20)
 set(FlpSourceFiles
         Source/Flp/Flp.h
         Source/Flp/Flp.cpp
-        Source/Flp/FlpEventReader.h
-        Source/Flp/FlpEventReader.cpp
+        Source/Flp/EventReader.h
+        Source/Flp/EventReader.cpp
         Source/Flp/FlpTypes.h
         Source/Flp/FlpTypes.cpp
 )

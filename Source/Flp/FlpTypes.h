@@ -44,7 +44,7 @@ struct FLdt
 
 // --------------------------------------------------------------------------------
 
-struct FlpEventDataSize
+struct EventDataSize
 {
     static constexpr std::uint8_t Byte     = 0b00 << 6;
     static constexpr std::uint8_t Word     = 0b01 << 6;
@@ -54,177 +54,177 @@ struct FlpEventDataSize
 
 // --------------------------------------------------------------------------------
 
-enum class FlpEventSize : std::uint8_t
+enum class EventSize : std::uint8_t
 {
-    Byte        = FlpEventDataSize::Byte,
-    Word        = FlpEventDataSize::Word,
-    Dword       = FlpEventDataSize::Dword,
-    Variable    = FlpEventDataSize::Variable
+    Byte        = EventDataSize::Byte,
+    Word        = EventDataSize::Word,
+    Dword       = EventDataSize::Dword,
+    Variable    = EventDataSize::Variable
 };
 
 // --------------------------------------------------------------------------------
 
-enum class FlpEventType : std::uint8_t
+enum class EventType : std::uint8_t
 {
     // BYTE sized (0..63)
-    ChanEnabled         	= FlpEventDataSize::Byte,
-    NoteOn              	= FlpEventDataSize::Byte + 1, // +pos
-    ChanVol             	= FlpEventDataSize::Byte + 2, // obsolete
-    ChanPan             	= FlpEventDataSize::Byte + 3, // obsolete
-    MIDIChan            	= FlpEventDataSize::Byte + 4,
-    MIDINote            	= FlpEventDataSize::Byte + 5,
-    MIDIPatch           	= FlpEventDataSize::Byte + 6,
-    MIDIBank            	= FlpEventDataSize::Byte + 7,
-    LoopActive          	= FlpEventDataSize::Byte + 9,
-    ShowInfo            	= FlpEventDataSize::Byte + 10,
-    Shuffle             	= FlpEventDataSize::Byte + 11,
-    MainVol             	= FlpEventDataSize::Byte + 12, // obsolete
-    FitToSteps          	= FlpEventDataSize::Byte + 13, // obsolete byte version
-    Pitchable           	= FlpEventDataSize::Byte + 14, // obsolete
-    Zipped              	= FlpEventDataSize::Byte + 15,
-    Delay_Flags         	= FlpEventDataSize::Byte + 16, // obsolete
-    TimeSig_Num         	= FlpEventDataSize::Byte + 17,
-    TimeSig_Beat        	= FlpEventDataSize::Byte + 18,
-    UseLoopPoints       	= FlpEventDataSize::Byte + 19,
-    LoopType            	= FlpEventDataSize::Byte + 20,
-    ChanType            	= FlpEventDataSize::Byte + 21,
-    TargetFXTrack       	= FlpEventDataSize::Byte + 22,
-    PanVolTab           	= FlpEventDataSize::Byte + 23, // log vol & circular pan tables
-    nStepsShown         	= FlpEventDataSize::Byte + 24, // obsolete
-    SSLength            	= FlpEventDataSize::Byte + 25, // +length
-    SSLoop              	= FlpEventDataSize::Byte + 26,
-    FXProps             	= FlpEventDataSize::Byte + 27, // FlipY, ReverseStereo, etc
-    Registered          	= FlpEventDataSize::Byte + 28, // reg version
-    APDC                	= FlpEventDataSize::Byte + 29,
-    TruncateClipNotes   	= FlpEventDataSize::Byte + 30,
-    EEAutoMode          	= FlpEventDataSize::Byte + 31,
+    ChanEnabled         	= EventDataSize::Byte,
+    NoteOn              	= EventDataSize::Byte + 1, // +pos
+    ChanVol             	= EventDataSize::Byte + 2, // obsolete
+    ChanPan             	= EventDataSize::Byte + 3, // obsolete
+    MIDIChan            	= EventDataSize::Byte + 4,
+    MIDINote            	= EventDataSize::Byte + 5,
+    MIDIPatch           	= EventDataSize::Byte + 6,
+    MIDIBank            	= EventDataSize::Byte + 7,
+    LoopActive          	= EventDataSize::Byte + 9,
+    ShowInfo            	= EventDataSize::Byte + 10,
+    Shuffle             	= EventDataSize::Byte + 11,
+    MainVol             	= EventDataSize::Byte + 12, // obsolete
+    FitToSteps          	= EventDataSize::Byte + 13, // obsolete byte version
+    Pitchable           	= EventDataSize::Byte + 14, // obsolete
+    Zipped              	= EventDataSize::Byte + 15,
+    Delay_Flags         	= EventDataSize::Byte + 16, // obsolete
+    TimeSig_Num         	= EventDataSize::Byte + 17,
+    TimeSig_Beat        	= EventDataSize::Byte + 18,
+    UseLoopPoints       	= EventDataSize::Byte + 19,
+    LoopType            	= EventDataSize::Byte + 20,
+    ChanType            	= EventDataSize::Byte + 21,
+    TargetFXTrack       	= EventDataSize::Byte + 22,
+    PanVolTab           	= EventDataSize::Byte + 23, // log vol & circular pan tables
+    nStepsShown         	= EventDataSize::Byte + 24, // obsolete
+    SSLength            	= EventDataSize::Byte + 25, // +length
+    SSLoop              	= EventDataSize::Byte + 26,
+    FXProps             	= EventDataSize::Byte + 27, // FlipY, ReverseStereo, etc
+    Registered          	= EventDataSize::Byte + 28, // reg version
+    APDC                	= EventDataSize::Byte + 29,
+    TruncateClipNotes   	= EventDataSize::Byte + 30,
+    EEAutoMode          	= EventDataSize::Byte + 31,
 
     // WORD sized (63..127)
-    NewChan             	= FlpEventDataSize::Word ,
-    NewPat              	= FlpEventDataSize::Word + 1, // +PatNum (word)
-    Tempo               	= FlpEventDataSize::Word + 2, // obsolete, replaced by FLP_FineTempo
-    CurrentPatNum       	= FlpEventDataSize::Word + 3,
-    PatData             	= FlpEventDataSize::Word + 4,
-    FX                  	= FlpEventDataSize::Word + 5,
-    FXFlags             	= FlpEventDataSize::Word + 6,
-    FXCut               	= FlpEventDataSize::Word + 7,
-    DotVol              	= FlpEventDataSize::Word + 8,
-    DotPan              	= FlpEventDataSize::Word + 9,
-    FXPreamp            	= FlpEventDataSize::Word + 10,
-    FXDecay             	= FlpEventDataSize::Word + 11,
-    FXAttack            	= FlpEventDataSize::Word + 12,
-    DotNote             	= FlpEventDataSize::Word + 13,
-    DotPitch            	= FlpEventDataSize::Word + 14,
-    DotMix              	= FlpEventDataSize::Word + 15,
-    MainPitch           	= FlpEventDataSize::Word + 16,
-    RandChan            	= FlpEventDataSize::Word + 17, // obsolete
-    MixChan             	= FlpEventDataSize::Word + 18, // obsolete
-    FXRes               	= FlpEventDataSize::Word + 19,
-    OldSongLoopPos      	= FlpEventDataSize::Word + 20, // obsolete
-    FXStDel             	= FlpEventDataSize::Word + 21,
-    FX3                 	= FlpEventDataSize::Word + 22,
-    DotFRes             	= FlpEventDataSize::Word + 23,
-    DotFCut             	= FlpEventDataSize::Word + 24,
-    ShiftTime           	= FlpEventDataSize::Word + 25,
-    LoopEndBar          	= FlpEventDataSize::Word + 26,
-    Dot                 	= FlpEventDataSize::Word + 27,
-    DotShift            	= FlpEventDataSize::Word + 28,
-    Tempo_Fine          	= FlpEventDataSize::Word + 29, // obsolete, replaced by FLP_FineTempo
-    LayerChan           	= FlpEventDataSize::Word + 30,
-    FXIcon              	= FlpEventDataSize::Word + 31,
-    DotRel              	= FlpEventDataSize::Word + 32,
-    SwingMix            	= FlpEventDataSize::Word + 33,
+    NewChan             	= EventDataSize::Word ,
+    NewPat              	= EventDataSize::Word + 1, // +PatNum (word)
+    Tempo               	= EventDataSize::Word + 2, // obsolete, replaced by FLP_FineTempo
+    CurrentPatNum       	= EventDataSize::Word + 3,
+    PatData             	= EventDataSize::Word + 4,
+    FX                  	= EventDataSize::Word + 5,
+    FXFlags             	= EventDataSize::Word + 6,
+    FXCut               	= EventDataSize::Word + 7,
+    DotVol              	= EventDataSize::Word + 8,
+    DotPan              	= EventDataSize::Word + 9,
+    FXPreamp            	= EventDataSize::Word + 10,
+    FXDecay             	= EventDataSize::Word + 11,
+    FXAttack            	= EventDataSize::Word + 12,
+    DotNote             	= EventDataSize::Word + 13,
+    DotPitch            	= EventDataSize::Word + 14,
+    DotMix              	= EventDataSize::Word + 15,
+    MainPitch           	= EventDataSize::Word + 16,
+    RandChan            	= EventDataSize::Word + 17, // obsolete
+    MixChan             	= EventDataSize::Word + 18, // obsolete
+    FXRes               	= EventDataSize::Word + 19,
+    OldSongLoopPos      	= EventDataSize::Word + 20, // obsolete
+    FXStDel             	= EventDataSize::Word + 21,
+    FX3                 	= EventDataSize::Word + 22,
+    DotFRes             	= EventDataSize::Word + 23,
+    DotFCut             	= EventDataSize::Word + 24,
+    ShiftTime           	= EventDataSize::Word + 25,
+    LoopEndBar          	= EventDataSize::Word + 26,
+    Dot                 	= EventDataSize::Word + 27,
+    DotShift            	= EventDataSize::Word + 28,
+    Tempo_Fine          	= EventDataSize::Word + 29, // obsolete, replaced by FLP_FineTempo
+    LayerChan           	= EventDataSize::Word + 30,
+    FXIcon              	= EventDataSize::Word + 31,
+    DotRel              	= EventDataSize::Word + 32,
+    SwingMix            	= EventDataSize::Word + 33,
 
     // DWORD sized (128..191)
-    PluginColor         	= FlpEventDataSize::Dword,
-    PLItem              	= FlpEventDataSize::Dword + 1, // Pos (word) +PatNum (word) (obsolete)
-    Echo                	= FlpEventDataSize::Dword + 2,
-    FXSine              	= FlpEventDataSize::Dword + 3,
-    CutCutBy            	= FlpEventDataSize::Dword + 4,
-    WindowH             	= FlpEventDataSize::Dword + 5,
-    MiddleNote          	= FlpEventDataSize::Dword + 7,
-    Reserved            	= FlpEventDataSize::Dword + 8, // may contain an invalid version info
-    MainResCut          	= FlpEventDataSize::Dword + 9, // obsolete
-    DelayFRes           	= FlpEventDataSize::Dword + 10,
-    Reverb              	= FlpEventDataSize::Dword + 11,
-    StretchTime         	= FlpEventDataSize::Dword + 12,
-    SSNote              	= FlpEventDataSize::Dword + 13, // SimSynth patch middle note (obsolete)
-    FineTune            	= FlpEventDataSize::Dword + 14,
-    SampleFlags         	= FlpEventDataSize::Dword + 15,
-    LayerFlags          	= FlpEventDataSize::Dword + 16,
-    ChanFilterNum       	= FlpEventDataSize::Dword + 17,
-    CurrentFilterNum    	= FlpEventDataSize::Dword + 18,
-    FXOutChanNum        	= FlpEventDataSize::Dword + 19, // FX track output channel
-    NewTimeMarker       	= FlpEventDataSize::Dword + 20, // + Time & Mode in higher bits
-    FXColor             	= FlpEventDataSize::Dword + 21,
-    PatColor            	= FlpEventDataSize::Dword + 22,
-    PatAutoMode         	= FlpEventDataSize::Dword + 23, // obsolete
-    SongLoopPos         	= FlpEventDataSize::Dword + 24,
-    AUSmpRate           	= FlpEventDataSize::Dword + 25,
-    FXInChanNum         	= FlpEventDataSize::Dword + 26, // FX track input channel
-    PluginIcon          	= FlpEventDataSize::Dword + 27,
-    FineTempo           	= FlpEventDataSize::Dword + 28,
+    PluginColor         	= EventDataSize::Dword,
+    PLItem              	= EventDataSize::Dword + 1, // Pos (word) +PatNum (word) (obsolete)
+    Echo                	= EventDataSize::Dword + 2,
+    FXSine              	= EventDataSize::Dword + 3,
+    CutCutBy            	= EventDataSize::Dword + 4,
+    WindowH             	= EventDataSize::Dword + 5,
+    MiddleNote          	= EventDataSize::Dword + 7,
+    Reserved            	= EventDataSize::Dword + 8, // may contain an invalid version info
+    MainResCut          	= EventDataSize::Dword + 9, // obsolete
+    DelayFRes           	= EventDataSize::Dword + 10,
+    Reverb              	= EventDataSize::Dword + 11,
+    StretchTime         	= EventDataSize::Dword + 12,
+    SSNote              	= EventDataSize::Dword + 13, // SimSynth patch middle note (obsolete)
+    FineTune            	= EventDataSize::Dword + 14,
+    SampleFlags         	= EventDataSize::Dword + 15,
+    LayerFlags          	= EventDataSize::Dword + 16,
+    ChanFilterNum       	= EventDataSize::Dword + 17,
+    CurrentFilterNum    	= EventDataSize::Dword + 18,
+    FXOutChanNum        	= EventDataSize::Dword + 19, // FX track output channel
+    NewTimeMarker       	= EventDataSize::Dword + 20, // + Time & Mode in higher bits
+    FXColor             	= EventDataSize::Dword + 21,
+    PatColor            	= EventDataSize::Dword + 22,
+    PatAutoMode         	= EventDataSize::Dword + 23, // obsolete
+    SongLoopPos         	= EventDataSize::Dword + 24,
+    AUSmpRate           	= EventDataSize::Dword + 25,
+    FXInChanNum         	= EventDataSize::Dword + 26, // FX track input channel
+    PluginIcon          	= EventDataSize::Dword + 27,
+    FineTempo           	= EventDataSize::Dword + 28,
 
     // Variable size (192..255) - Text is null terminated AnsiString
-    Text_ChanName       	= FlpEventDataSize::Variable ,  // obsolete
-    Text_PatName        	= FlpEventDataSize::Variable + 1,
-    Text_Title          	= FlpEventDataSize::Variable + 2,
-    Text_Comment        	= FlpEventDataSize::Variable + 3,
-    Text_SampleFileName 	= FlpEventDataSize::Variable + 4,
-    Text_URL            	= FlpEventDataSize::Variable + 5,
-    Text_CommentRTF     	= FlpEventDataSize::Variable + 6, // comments in Rich Text format
-    Version             	= FlpEventDataSize::Variable + 7,
-    RegName             	= FlpEventDataSize::Variable + 8, // since 1.3.9 the (scrambled) reg name is stored in the FLP
-    Text_DefPluginName  	= FlpEventDataSize::Variable + 9,
+    Text_ChanName       	= EventDataSize::Variable ,  // obsolete
+    Text_PatName        	= EventDataSize::Variable + 1,
+    Text_Title          	= EventDataSize::Variable + 2,
+    Text_Comment        	= EventDataSize::Variable + 3,
+    Text_SampleFileName 	= EventDataSize::Variable + 4,
+    Text_URL            	= EventDataSize::Variable + 5,
+    Text_CommentRTF     	= EventDataSize::Variable + 6, // comments in Rich Text format
+    Version             	= EventDataSize::Variable + 7,
+    RegName             	= EventDataSize::Variable + 8, // since 1.3.9 the (scrambled) reg name is stored in the FLP
+    Text_DefPluginName  	= EventDataSize::Variable + 9,
     //FLP_Text_CommentRTF_SC 	=FLP_Text+10, // new comments in Rich Text format (obsolete)
-    Text_ProjDataPath   	= FlpEventDataSize::Variable + 10,
-    Text_PluginName     	= FlpEventDataSize::Variable + 11, // plugin's name
-    Text_FXName         	= FlpEventDataSize::Variable + 12, // FX track name
-    Text_TimeMarker     	= FlpEventDataSize::Variable + 13, // time marker name
-    Text_Genre          	= FlpEventDataSize::Variable + 14,
-    Text_Author         	= FlpEventDataSize::Variable + 15,
-    MIDICtrls           	= FlpEventDataSize::Variable + 16,
-    Delay               	= FlpEventDataSize::Variable + 17,
-    TS404Params         	= FlpEventDataSize::Variable + 18,
-    DelayLine           	= FlpEventDataSize::Variable + 19, // obsolete
-    NewPlugin           	= FlpEventDataSize::Variable + 20, // new VST or DirectX plugin
-    PluginParams        	= FlpEventDataSize::Variable + 21,
-    Reserved2           	= FlpEventDataSize::Variable + 22, // used once for testing
-    ChanParams          	= FlpEventDataSize::Variable + 23, // block of various channel params (can grow)
-    CtrlRecChan         	= FlpEventDataSize::Variable + 24, // automated controller events
-    PLSel               	= FlpEventDataSize::Variable + 25, // selection in playlist
-    Envelope            	= FlpEventDataSize::Variable + 26,
-    ChanLevels          	= FlpEventDataSize::Variable + 27, // pan, vol, pitch, filter, filter type
-    ChanFilter          	= FlpEventDataSize::Variable + 28, // cut, res, type (obsolete)
-    ChanPoly            	= FlpEventDataSize::Variable + 29, // max poly, poly slide, monophonic
-    NoteRecChan         	= FlpEventDataSize::Variable + 30, // automated note events
-    PatCtrlRecChan      	= FlpEventDataSize::Variable + 31, // automated ctrl events per pattern
-    PatNoteRecChan      	= FlpEventDataSize::Variable + 32, // automated note events per pattern
-    InitCtrlRecChan     	= FlpEventDataSize::Variable + 33, // init values for automated events
-    RemoteCtrl_MIDI     	= FlpEventDataSize::Variable + 34, // remote control entry (MIDI)
-    RemoteCtrl_Int      	= FlpEventDataSize::Variable + 35, // remote control entry (internal)
-    Tracking            	= FlpEventDataSize::Variable + 36, // vol/kb tracking
-    ChanOfsLevels       	= FlpEventDataSize::Variable + 37, // levels offset
-    Text_RemoteCtrlFormula 	= FlpEventDataSize::Variable + 38, // remote control entry formula
-    Text_ChanFilter     	= FlpEventDataSize::Variable + 39,
-    RegBlackList        	= FlpEventDataSize::Variable + 40, // black list of reg codes
-    PLRecChan           	= FlpEventDataSize::Variable + 41, // playlist
-    ChanAC              	= FlpEventDataSize::Variable + 42, // channel articulator
-    FXRouting           	= FlpEventDataSize::Variable + 43,
-    FXParams            	= FlpEventDataSize::Variable + 44,
-    ProjectTime         	= FlpEventDataSize::Variable + 45,
-    PLTrackInfo         	= FlpEventDataSize::Variable + 46,
-    Text_PLTrackName    	= FlpEventDataSize::Variable + 47,
+    Text_ProjDataPath   	= EventDataSize::Variable + 10,
+    Text_PluginName     	= EventDataSize::Variable + 11, // plugin's name
+    Text_FXName         	= EventDataSize::Variable + 12, // FX track name
+    Text_TimeMarker     	= EventDataSize::Variable + 13, // time marker name
+    Text_Genre          	= EventDataSize::Variable + 14,
+    Text_Author         	= EventDataSize::Variable + 15,
+    MIDICtrls           	= EventDataSize::Variable + 16,
+    Delay               	= EventDataSize::Variable + 17,
+    TS404Params         	= EventDataSize::Variable + 18,
+    DelayLine           	= EventDataSize::Variable + 19, // obsolete
+    NewPlugin           	= EventDataSize::Variable + 20, // new VST or DirectX plugin
+    PluginParams        	= EventDataSize::Variable + 21,
+    Reserved2           	= EventDataSize::Variable + 22, // used once for testing
+    ChanParams          	= EventDataSize::Variable + 23, // block of various channel params (can grow)
+    CtrlRecChan         	= EventDataSize::Variable + 24, // automated controller events
+    PLSel               	= EventDataSize::Variable + 25, // selection in playlist
+    Envelope            	= EventDataSize::Variable + 26,
+    ChanLevels          	= EventDataSize::Variable + 27, // pan, vol, pitch, filter, filter type
+    ChanFilter          	= EventDataSize::Variable + 28, // cut, res, type (obsolete)
+    ChanPoly            	= EventDataSize::Variable + 29, // max poly, poly slide, monophonic
+    NoteRecChan         	= EventDataSize::Variable + 30, // automated note events
+    PatCtrlRecChan      	= EventDataSize::Variable + 31, // automated ctrl events per pattern
+    PatNoteRecChan      	= EventDataSize::Variable + 32, // automated note events per pattern
+    InitCtrlRecChan     	= EventDataSize::Variable + 33, // init values for automated events
+    RemoteCtrl_MIDI     	= EventDataSize::Variable + 34, // remote control entry (MIDI)
+    RemoteCtrl_Int      	= EventDataSize::Variable + 35, // remote control entry (internal)
+    Tracking            	= EventDataSize::Variable + 36, // vol/kb tracking
+    ChanOfsLevels       	= EventDataSize::Variable + 37, // levels offset
+    Text_RemoteCtrlFormula 	= EventDataSize::Variable + 38, // remote control entry formula
+    Text_ChanFilter     	= EventDataSize::Variable + 39,
+    RegBlackList        	= EventDataSize::Variable + 40, // black list of reg codes
+    PLRecChan           	= EventDataSize::Variable + 41, // playlist
+    ChanAC              	= EventDataSize::Variable + 42, // channel articulator
+    FXRouting           	= EventDataSize::Variable + 43,
+    FXParams            	= EventDataSize::Variable + 44,
+    ProjectTime         	= EventDataSize::Variable + 45,
+    PLTrackInfo         	= EventDataSize::Variable + 46,
+    Text_PLTrackName    	= EventDataSize::Variable + 47,
 
 };
 
 // --------------------------------------------------------------------------------
 
-bool FlpTypeMatchesSize(FlpEventType type, FlpEventSize size);
+bool TypeMatchesSize(EventType type, EventSize size);
 
 // --------------------------------------------------------------------------------
 
-FlpEventSize GetEventSize(FlpEventType type);
+EventSize GetEventSize(EventType type);
 
 // --------------------------------------------------------------------------------
 

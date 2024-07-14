@@ -1,10 +1,10 @@
-#include "FlpEventReader.h"
+#include "EventReader.h"
 #include "FlpTypes.h"
 #include <cassert>
 
 // --------------------------------------------------------------------------------
 
-flp::FlpEventReader::FlpEventReader(std::istream& read)
+flp::EventReader::EventReader(std::istream& read)
     : m_read(read)
 {
     read.read(reinterpret_cast<char *>(&header), sizeof(header));
@@ -20,19 +20,19 @@ flp::FlpEventReader::FlpEventReader(std::istream& read)
 
 // --------------------------------------------------------------------------------
 
-flp::FlpEventType flp::FlpEventReader::Event::getType() const
+flp::EventType flp::EventReader::Event::getType() const
 {
     return m_type;
 }
 
 // --------------------------------------------------------------------------------
 
-std::uint8_t flp::FlpEventReader::Event::getDataByte()
+std::uint8_t flp::EventReader::Event::getDataByte()
 {
     assert(!m_isConsumed);
     m_isConsumed = true;
 
-    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Byte) };
+    const auto b{ TypeMatchesSize(m_type, EventSize::Byte) };
     assert(b);
 
     std::uint8_t r{ 0 };
@@ -43,12 +43,12 @@ std::uint8_t flp::FlpEventReader::Event::getDataByte()
 
 // --------------------------------------------------------------------------------
 
-std::uint16_t flp::FlpEventReader::Event::getDataWord()
+std::uint16_t flp::EventReader::Event::getDataWord()
 {
     assert(!m_isConsumed);
     m_isConsumed = true;
 
-    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Word) };
+    const auto b{ TypeMatchesSize(m_type, EventSize::Word) };
     assert(b);
 
     std::uint16_t r{ 0 };
@@ -59,12 +59,12 @@ std::uint16_t flp::FlpEventReader::Event::getDataWord()
 
 // --------------------------------------------------------------------------------
 
-std::uint32_t flp::FlpEventReader::Event::getDataDword()
+std::uint32_t flp::EventReader::Event::getDataDword()
 {
     assert(!m_isConsumed);
     m_isConsumed = true;
 
-    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Dword) };
+    const auto b{ TypeMatchesSize(m_type, EventSize::Dword) };
     assert(b);
 
     std::uint32_t r{ 0 };
@@ -75,12 +75,12 @@ std::uint32_t flp::FlpEventReader::Event::getDataDword()
 
 // --------------------------------------------------------------------------------
 
-std::vector<std::uint8_t> flp::FlpEventReader::Event::getDataVariable()
+std::vector<std::uint8_t> flp::EventReader::Event::getDataVariable()
 {
     assert(!m_isConsumed);
     m_isConsumed = true;
 
-    const auto b{ FlpTypeMatchesSize(m_type, FlpEventSize::Variable) };
+    const auto b{ TypeMatchesSize(m_type, EventSize::Variable) };
     assert(b);
 
     std::vector<std::uint8_t> r;
@@ -100,30 +100,30 @@ std::vector<std::uint8_t> flp::FlpEventReader::Event::getDataVariable()
 
 // --------------------------------------------------------------------------------
 
-bool flp::FlpEventReader::Event::isExpired() const
+bool flp::EventReader::Event::isExpired() const
 {
     return false;
 }
 
 // --------------------------------------------------------------------------------
 
-flp::FlpEventReader::Event::~Event()
+flp::EventReader::Event::~Event()
 {
     if (m_isConsumed)
         return;
 
     switch (GetEventSize(m_type))
     {
-    case FlpEventSize::Byte:
+    case EventSize::Byte:
         skipBytes(1);
         break;
-    case FlpEventSize::Word:
+    case EventSize::Word:
         skipBytes(2);
         break;
-    case FlpEventSize::Dword:
+    case EventSize::Dword:
         skipBytes(4);
         break;
-    case FlpEventSize::Variable:
+    case EventSize::Variable:
         skipBytes(ReadVarDataLength(m_read));
         break;
     default:
@@ -134,15 +134,15 @@ flp::FlpEventReader::Event::~Event()
 
 // --------------------------------------------------------------------------------
 
-flp::FlpEventReader::Event::Event(std::istream& read)
+flp::EventReader::Event::Event(std::istream& read)
     : m_read(read)
-    , m_type([&read]() { char u; read.get(u); return static_cast<FlpEventType>(u); }())
+    , m_type([&read]() { char u; read.get(u); return static_cast<EventType>(u); }())
 {
 }
 
 // --------------------------------------------------------------------------------
 
-void flp::FlpEventReader::Event::skipBytes(std::size_t byteCount)
+void flp::EventReader::Event::skipBytes(std::size_t byteCount)
 {
     int pos = m_read.tellg();
     m_read.seekg(pos + static_cast<int>(byteCount), std::ios::beg);
@@ -151,7 +151,7 @@ void flp::FlpEventReader::Event::skipBytes(std::size_t byteCount)
 
 // --------------------------------------------------------------------------------
 
-flp::FlpEventReader::Event flp::FlpEventReader::getNextEvent()
+flp::EventReader::Event flp::EventReader::getNextEvent()
 {
     const Event e{ m_read };
     return e;
@@ -159,14 +159,14 @@ flp::FlpEventReader::Event flp::FlpEventReader::getNextEvent()
 
 // --------------------------------------------------------------------------------
 
-bool flp::FlpEventReader::hasEvents()
+bool flp::EventReader::hasEvents()
 {
     return m_read.peek() != EOF;
 }
 
 // --------------------------------------------------------------------------------
 
-void flp::FlpEventReader::PrintAllEvents(FlpEventReader& reader)
+void flp::EventReader::PrintAllEvents(EventReader& reader)
 {
     while (reader.hasEvents())
     {
@@ -174,16 +174,16 @@ void flp::FlpEventReader::PrintAllEvents(FlpEventReader& reader)
 
         switch (flp::GetEventSize(e.getType()))
         {
-        case flp::FlpEventSize::Byte:
+        case flp::EventSize::Byte:
             printf("0x%02x (BYTE): 0x%02x\n", e.getType(), e.getDataByte());
             break;
-        case flp::FlpEventSize::Word:
+        case flp::EventSize::Word:
             printf("0x%02x (WORD): 0x%04x\n", e.getType(), e.getDataWord());
             break;
-        case flp::FlpEventSize::Dword:
+        case flp::EventSize::Dword:
             printf("0x%02x (DWORD): 0x%08x\n", e.getType(), e.getDataDword());
             break;
-        case flp::FlpEventSize::Variable:
+        case flp::EventSize::Variable:
         {
             printf("0x%02x (VAR): ", e.getType());
             for (auto u : e.getDataVariable())
@@ -201,7 +201,7 @@ void flp::FlpEventReader::PrintAllEvents(FlpEventReader& reader)
 
 // --------------------------------------------------------------------------------
 
-flp::FlpEventReader::EventVariantList flp::FlpEventReader::GetEventVariantList(FlpEventReader& reader)
+flp::EventReader::EventVariantList flp::EventReader::GetEventVariantList(EventReader& reader)
 {
     EventVariantList events;
 
@@ -211,16 +211,16 @@ flp::FlpEventReader::EventVariantList flp::FlpEventReader::GetEventVariantList(F
 
         switch (flp::GetEventSize(e.getType()))
         {
-        case flp::FlpEventSize::Byte:
+        case flp::EventSize::Byte:
             events.push_back(std::make_pair(e.getType(), e.getDataByte()));
             break;
-        case flp::FlpEventSize::Word:
+        case flp::EventSize::Word:
             events.push_back(std::make_pair(e.getType(), e.getDataWord()));
             break;
-        case flp::FlpEventSize::Dword:
+        case flp::EventSize::Dword:
             events.push_back(std::make_pair(e.getType(), e.getDataDword()));
             break;
-        case flp::FlpEventSize::Variable:
+        case flp::EventSize::Variable:
             events.push_back(std::make_pair(e.getType(), e.getDataVariable()));
             break;
 
