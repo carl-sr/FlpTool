@@ -2,14 +2,14 @@
 #include <iostream>
 #include <fstream>
 
-#include "Flp/FlpEventReader.h"
+#include "Flp/EventReader.h"
 
 int main()
 {
 	std::ifstream file{ "D:/code/kaitai/flp/empty.flp" };
 	std::cout << file.is_open() << std::endl;
 
-	flp::FlpEventReader flp{ file };
+	flp::EventReader flp{ file };
 
 	return 0;
 
@@ -19,16 +19,16 @@ int main()
 
 		switch(flp::GetEventSize(e.getType()))
 		{
-		case flp::FlpEventSize::Byte:
+		case flp::EventSize::Byte:
 			std::cout << e.getDataByte() << std::endl;
 			break;
-		case flp::FlpEventSize::Word:
+		case flp::EventSize::Word:
 			std::cout << e.getDataWord() << std::endl;
 			break;
-		case flp::FlpEventSize::Dword:
+		case flp::EventSize::Dword:
 			std::cout << e.getDataDword() << std::endl;
 			break;
-		case flp::FlpEventSize::Variable:
+		case flp::EventSize::Variable:
 			// std::cout << e.getDataVariable() << std::endl;
 			break;
 		default:
