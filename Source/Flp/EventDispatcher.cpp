@@ -1,8 +1,8 @@
-#include "FlpEventDispatcher.h"
+#include "EventDispatcher.h"
 
 // --------------------------------------------------------------------------------
 
-flp::FlpEventDispatcher::FlpEventDispatcher(std::istream &read)
+flp::EventDispatcher::EventDispatcher(std::istream &read)
     : m_reader(read)
 {
 }

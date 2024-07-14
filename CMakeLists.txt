@@ -11,12 +11,12 @@ set(CMAKE_CXX_STANDARD 20)
 set(FlpSourceFiles
         Source/Flp/Flp.h
         Source/Flp/Flp.cpp
-        Source/Flp/FlpEventReader.h
-        Source/Flp/FlpEventReader.cpp
+        Source/Flp/EventReader.h
+        Source/Flp/EventReader.cpp
         Source/Flp/FlpTypes.h
         Source/Flp/FlpTypes.cpp
-        Source/Flp/FlpEventDispatcher.h
-        Source/Flp/FlpEventDispatcher.cpp
+        Source/Flp/EventDispatcher.h
+        Source/Flp/EventDispatcher.cpp
 )
 
 add_library(Flp STATIC ${FlpSourceFiles})

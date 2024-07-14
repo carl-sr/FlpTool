@@ -14,10 +14,10 @@ BEGIN_NAMESPACE_FLP
 
 // --------------------------------------------------------------------------------
 
-class FlpEventReader
+class EventReader
 {
 public:
-    explicit FlpEventReader(std::istream &read);
+    explicit EventReader(std::istream &read);
 
     FLhd header;
     FLdt data;
@@ -26,7 +26,7 @@ public:
     {
     public:
 
-        FlpEventType getType() const;
+        EventType getType() const;
 
         std::uint8_t getDataByte();
         std::uint16_t getDataWord();
@@ -38,7 +38,7 @@ public:
         ~Event();
 
     private:
-        friend class FlpEventReader;
+        friend class EventReader;
 
         Event(std::istream &read);
 
@@ -46,17 +46,17 @@ public:
 
         bool m_isConsumed{ false };
         std::istream &m_read;
-        const FlpEventType m_type;
+        const EventType m_type;
     };
 
     Event getNextEvent();
     bool hasEvents();
 
-    static void PrintAllEvents(FlpEventReader& reader);
+    static void PrintAllEvents(EventReader& reader);
 
     using EventVariantType = std::variant<std::uint8_t, std::uint16_t, std::uint32_t, std::vector<std::uint8_t>>;
-    using EventVariantList = std::vector<std::pair<flp::FlpEventType, EventVariantType>>;
-    EventVariantList GetEventVariantList(FlpEventReader& reader);
+    using EventVariantList = std::vector<std::pair<flp::EventType, EventVariantType>>;
+    static EventVariantList GetEventVariantList(EventReader& reader);
 
 private:
     std::istream &m_read;
