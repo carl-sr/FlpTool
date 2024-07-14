@@ -1,10 +1,8 @@
-cmake_minimum_required(VERSION 3.2)
+cmake_minimum_required(VERSION 3.5)
+set(CMAKE_CXX_STANDARD 20)
 
 set(PROJECT_NAME "FlpTool")
-
 project(${PROJECT_NAME} VERSION 1.0)
-
-set(CMAKE_CXX_STANDARD 20)
 
 #--------------------------------------------------------------------------------
 # lib
@@ -20,7 +18,6 @@ set(FlpSourceFiles
 )
 
 add_library(Flp STATIC ${FlpSourceFiles})
-target_compile_options(Flp PUBLIC "-MTd")
 
 #--------------------------------------------------------------------------------
 # command line tool
@@ -31,6 +28,19 @@ set(SourceFiles
 #--------------------------------------------------------------------------------
 # tests
 enable_testing()
+
+# todo: fix mismatch
+# mismatch detected for 'RuntimeLibrary'
+# >>> CMakeFiles/FlpTool_Tests.dir/Tests/main.cpp.obj has value MDd_DynamicDebug
+# >>> gtest.lib(gtest-all.cc.obj) has value MTd_StaticDebug
+#
+# this works for msvc:
+# target_compile_options(${PROJECT_NAME}_Tests PUBLIC "-MTd")
+# this seems to work for both, but seems weird
+option(gtest_force_shared_crt
+        "Use shared (DLL) run-time lib even when Google Test is built as static lib."
+        ON)
+
 add_subdirectory(External/googletest)
 
 set(TestSourceFiles
@@ -39,7 +49,6 @@ set(TestSourceFiles
 )
 
 add_executable(${PROJECT_NAME}_Tests ${TestSourceFiles})
-set_property(TARGET ${PROJECT_NAME}_Tests PROPERTY CXX_STANDARD 20)
 target_include_directories(${PROJECT_NAME}_Tests PUBLIC "Source")
 
 target_link_libraries(${PROJECT_NAME}_Tests
@@ -47,11 +56,3 @@ target_link_libraries(${PROJECT_NAME}_Tests
         gtest
         Flp
 )
-
-# todo: fix mismatch
-# mismatch detected for 'RuntimeLibrary'
-# >>> CMakeFiles/FlpTool_Tests.dir/Tests/main.cpp.obj has value MDd_DynamicDebug
-# >>> gtest.lib(gtest-all.cc.obj) has value MTd_StaticDebug
-#
-# this works for msvc:
-target_compile_options(${PROJECT_NAME}_Tests PUBLIC "-MTd")
