@@ -4,29 +4,10 @@
 
 #include <gtest/gtest.h>
 #include "Flp/EventReader.h"
-#include "Flp/EventDispatcher.h"
 #include <fstream>
 #include <ranges>
 #include <sstream>
 #include <array>
-
-//--------------------------------------------------------------------------------
-
-std::ifstream GetFlpFileStream()
-{
-    constexpr const char* flilePath{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp" };
-    // a.flp
-    //     version: 24.1.1.1234
-    //     160 bpm
-    //     plugins :
-    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
-    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
-    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
-    //     - Fruity Limiter(default)
-
-    std::ifstream file{ flilePath };
-    return file;
-}
 
 //--------------------------------------------------------------------------------
 
@@ -202,7 +183,16 @@ TEST(FlpEventReader, GetEventSizeTest)
 
 TEST(FlpEventReader, ReadMetaData)
 {
-    auto file{ GetFlpFileStream() };
+    constexpr const char *flilePath{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp" };
+    // a.flp
+    //     160 bpm
+    //     plugins :
+    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
+    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
+    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
+    //     - Fruity Limiter(default)
+
+    std::ifstream file{ flilePath };
     flp::EventReader flp{ file };
 
     EXPECT_TRUE(flp.header.isValid());
@@ -216,7 +206,16 @@ TEST(FlpEventReader, ReadMetaData)
 
 TEST(FlpEventReader, ReadEvents)
 {
-    auto file{ GetFlpFileStream() };
+    constexpr const char* flilePath{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp" };
+    // a.flp
+    //     160 bpm
+    //     plugins :
+    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
+    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
+    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
+    //     - Fruity Limiter(default)
+
+    std::ifstream file{ flilePath };
     flp::EventReader flp{ file };
 
     EXPECT_TRUE(flp.hasEvents());
@@ -232,7 +231,7 @@ TEST(FlpEventReader, VariableLengthBit)
         std::size_t expect;
     };
 
-    constexpr std::uint8_t Mask{ 0b1 << 7 }; // highest bit means the number continues
+    constexpr std::uint8_t Mask{ 0b1 << 7 }; // highest beat means the number continues
 
     std::vector<Case> testCases{
         { { 0x00, 0x02 }, 0 },
@@ -244,7 +243,7 @@ TEST(FlpEventReader, VariableLengthBit)
 
     for (const auto& testCase: testCases)
     {
-
+        
         std::stringstream ss;
 
         for (const auto i : testCase.bits)
@@ -259,12 +258,19 @@ TEST(FlpEventReader, VariableLengthBit)
 
 TEST(FlpEventReader, GoodEventData)
 {
-    auto file{ GetFlpFileStream() };
+    constexpr const char* flilePath{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp" };
+    // a.flp
+    //     160 bpm
+    //     plugins :
+    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
+    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
+    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
+    //     - Fruity Limiter(default)
+
+    std::ifstream file{ flilePath, std::ios::beg | std::ios::binary };
     flp::EventReader flp{ file };
 
     EXPECT_TRUE(flp.hasEvents());
-
-    auto list = flp::EventReader::GetEventVariantList(flp);
 
     int eventCount{ 0 };
 
@@ -281,22 +287,3 @@ TEST(FlpEventReader, GoodEventData)
 
 //--------------------------------------------------------------------------------
 
-TEST(FlpEventDispatcher, test)
-{
-    auto file{ GetFlpFileStream() };
-    flp::EventDispatcher d{ file };
-
-    bool gotVersion{ false };
-    // d.addHandler(flp::EventType::Version, [&gotVersion](const std::span<const std::uint8_t> data)
-    // {
-            // EXPECT_FALSE(gotVersion);
-            // gotVersion = true;
-    // });
-
-    // EXPECT_TRUE(gotVersion);
-
-    // std::uint8_t registeredByte{ 0 };
-    // d.addHandler(flp::FlpEventType::Registered, [&registeredByte](const std::uint8_t u) { registeredByte = u; });
-}
-
-//--------------------------------------------------------------------------------
