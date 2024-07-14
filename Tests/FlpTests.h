@@ -11,9 +11,25 @@
 
 //--------------------------------------------------------------------------------
 
+inline std::ifstream GetFileStream()
+{
+    // a.flp
+    //     160 bpm
+    //     plugins :
+    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
+    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
+    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
+    //     - Fruity Limiter(default)
+
+    std::ifstream file{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp", std::ios::beg | std::ios::binary };
+    return file;
+}
+
+//--------------------------------------------------------------------------------
+
 TEST(FlpEventReader, GetEventSizeTest)
 {
-    for (auto e : {
+    for (const auto e : {
         flp::EventType::ChanEnabled,
         flp::EventType::NoteOn,
         flp::EventType::ChanVol,
@@ -50,7 +66,7 @@ TEST(FlpEventReader, GetEventSizeTest)
         EXPECT_EQ(flp::GetEventSize(e), flp::EventSize::Byte);
     }
 
-    for (auto e : {
+    for (const auto e : {
         flp::EventType::NewChan,
         flp::EventType::NewPat,
         flp::EventType::Tempo,
@@ -90,7 +106,7 @@ TEST(FlpEventReader, GetEventSizeTest)
         EXPECT_EQ(flp::GetEventSize(e), flp::EventSize::Word);
     }
 
-    for (auto e : {
+    for (const auto e : {
         flp::EventType::PluginColor,
         flp::EventType::PLItem,
         flp::EventType::Echo,
@@ -124,7 +140,7 @@ TEST(FlpEventReader, GetEventSizeTest)
         EXPECT_EQ(flp::GetEventSize(e), flp::EventSize::Dword);
     }
 
-    for (auto e : {
+    for (const auto e : {
         flp::EventType::Text_ChanName,
         flp::EventType::Text_PatName,
         flp::EventType::Text_Title,
@@ -183,16 +199,7 @@ TEST(FlpEventReader, GetEventSizeTest)
 
 TEST(FlpEventReader, ReadMetaData)
 {
-    constexpr const char *flilePath{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp" };
-    // a.flp
-    //     160 bpm
-    //     plugins :
-    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
-    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
-    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
-    //     - Fruity Limiter(default)
-
-    std::ifstream file{ flilePath };
+    auto file{ GetFileStream() };
     flp::EventReader flp{ file };
 
     EXPECT_TRUE(flp.header.isValid());
@@ -206,16 +213,7 @@ TEST(FlpEventReader, ReadMetaData)
 
 TEST(FlpEventReader, ReadEvents)
 {
-    constexpr const char* flilePath{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp" };
-    // a.flp
-    //     160 bpm
-    //     plugins :
-    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
-    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
-    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
-    //     - Fruity Limiter(default)
-
-    std::ifstream file{ flilePath };
+    auto file{ GetFileStream() };
     flp::EventReader flp{ file };
 
     EXPECT_TRUE(flp.hasEvents());
@@ -227,26 +225,26 @@ TEST(FlpEventReader, VariableLengthBit)
 {
     struct Case
     {
-        std::vector<std::uint8_t> bits;
+        std::vector<std::uint8_t> bytes;
         std::size_t expect;
     };
 
     constexpr std::uint8_t Mask{ 0b1 << 7 }; // highest beat means the number continues
 
-    std::vector<Case> testCases{
+    const std::vector<Case> testCases{
         { { 0x00, 0x02 }, 0 },
         { { 0x01, 0x02 }, 1 },
-        { { 0x01 | (0b1 << 7), 0x00 }, 1 },
-        { { 0x01 | (0b1 << 7), 0x01 | (0b1 << 7), 0x01 }, 3 },
-        { { 0x02 | (0b1 << 7), 0x02 | (0b1 << 7), 0x02 }, 6 },
+        { { 0x01 | Mask, 0x00 }, 1 },
+        { { 0x01 | Mask, 0x01 | Mask, 0x01 }, 3 },
+        { { 0x02 | Mask, 0x02 | Mask, 0x02 }, 6 },
     };
 
     for (const auto& testCase: testCases)
     {
-        
+
         std::stringstream ss;
 
-        for (const auto i : testCase.bits)
+        for (const auto i : testCase.bytes)
             ss << i;
 
         std::size_t result{ flp::ReadVarDataLength(ss)};
@@ -258,16 +256,8 @@ TEST(FlpEventReader, VariableLengthBit)
 
 TEST(FlpEventReader, GoodEventData)
 {
-    constexpr const char* flilePath{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp" };
-    // a.flp
-    //     160 bpm
-    //     plugins :
-    // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
-    //     - one pattern{ color: #864559, name: 'THIS IS THE PATTERN' }
-    //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
-    //     - Fruity Limiter(default)
+    auto file{ GetFileStream() };
 
-    std::ifstream file{ flilePath, std::ios::beg | std::ios::binary };
     flp::EventReader flp{ file };
 
     EXPECT_TRUE(flp.hasEvents());

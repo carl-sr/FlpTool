@@ -56,7 +56,7 @@ public:
 
     using EventVariantType = std::variant<std::uint8_t, std::uint16_t, std::uint32_t, std::vector<std::uint8_t>>;
     using EventVariantList = std::vector<std::pair<flp::EventType, EventVariantType>>;
-    EventVariantList GetEventVariantList(EventReader& reader);
+    static EventVariantList GetEventVariantList(EventReader& reader);
 
 private:
     std::istream &m_read;
