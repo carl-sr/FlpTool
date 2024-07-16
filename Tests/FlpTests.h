@@ -4,6 +4,7 @@
 
 #include <gtest/gtest.h>
 #include "Flp/EventReader.h"
+#include "Flp/EventHandler.h"
 #include <fstream>
 #include <ranges>
 #include <sstream>
@@ -14,6 +15,7 @@
 inline std::ifstream GetFileStream()
 {
     // a.flp
+    //     version: 24.1.1.4234
     //     160 bpm
     //     plugins :
     // -one sytrus{ color: #FDA73F, name: 'Sytrus' }
@@ -273,6 +275,33 @@ TEST(FlpEventReader, GoodEventData)
     EXPECT_TRUE(file.eof());
 
     EXPECT_EQ(eventCount, 26023); // says kaitai
+}
+
+//--------------------------------------------------------------------------------
+
+TEST(FlpEventHander, GrabVersion)
+{
+    auto file{ GetFileStream() };
+    flp::EventReader flp{ file };
+
+    flp::EventHandler handler;
+
+    const std::string expectVersion{ "24.1.1.4234" };
+    std::string gotVersion;
+
+    handler.addHandler<flp::EventType::Version, flp::EventSize::Variable>([&gotVersion](auto e)
+    {
+        for(auto c : e.data)
+        {
+            if (c)
+                gotVersion += c;
+        }
+    });
+
+    handler.dispatch(flp);
+
+    EXPECT_FALSE(gotVersion.empty());
+    EXPECT_EQ(expectVersion, gotVersion);
 }
 
 //--------------------------------------------------------------------------------
