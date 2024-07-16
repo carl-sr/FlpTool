@@ -5,6 +5,7 @@
 #include "Flp.h"
 #include <cstdint>
 #include <istream>
+#include <span>
 
 // --------------------------------------------------------------------------------
 
@@ -223,11 +224,86 @@ bool TypeMatchesSize(EventType type, EventSize size);
 
 // --------------------------------------------------------------------------------
 
-EventSize GetEventSize(EventType type);
+constexpr EventSize GetEventSize(EventType type)
+{
+    auto u8Type{ static_cast<std::uint8_t>(type) };
+    u8Type &= 0b11 << 6;
+
+    return static_cast<EventSize>(u8Type);
+}
 
 // --------------------------------------------------------------------------------
 
 std::size_t ReadVarDataLength(std::istream& read);
+
+// --------------------------------------------------------------------------------
+// EventTypeDataSize
+// given an EventType get its EventSize
+// --------------------------------------------------------------------------------
+
+template<EventType Type>
+struct EventTypeDataSize
+{
+    constexpr static EventSize size = GetEventSize(Type);
+};
+
+static_assert(EventTypeDataSize<EventType::ChanEnabled>::size == EventSize::Byte);
+static_assert(EventTypeDataSize<EventType::NewChan>::size == EventSize::Word);
+static_assert(EventTypeDataSize<EventType::PluginColor>::size == EventSize::Dword);
+static_assert(EventTypeDataSize<EventType::Text_ChanName>::size == EventSize::Variable);
+
+// --------------------------------------------------------------------------------
+// EventSizeDataType
+// find the data type associated with a DataSize
+// --------------------------------------------------------------------------------
+
+template<EventSize>
+struct EventSizeDataType
+{
+};
+
+template<>
+struct EventSizeDataType<EventSize::Byte>
+{
+    using DataType = const std::uint8_t;
+};
+
+template<>
+struct EventSizeDataType<EventSize::Word>
+{
+    using DataType = const std::uint16_t;
+};
+
+template<>
+struct EventSizeDataType<EventSize::Dword>
+{
+    using DataType = const std::uint32_t;
+};
+
+template<>
+struct EventSizeDataType<EventSize::Variable>
+{
+    using DataType = std::span<const std::uint8_t>;
+};
+
+
+// --------------------------------------------------------------------------------
+// EventHandlerDataType
+// find the data type associated with an EventType
+// --------------------------------------------------------------------------------
+
+template<EventType Type, EventSize Size = EventTypeDataSize<Type>::size>
+struct EventDataType
+{
+    using DataType = typename EventSizeDataType<Size>::DataType;
+};
+
+// --------------------------------------------------------------------------------
+
+static_assert(std::is_same_v<EventDataType<EventType::ChanEnabled>::DataType, const std::uint8_t>);
+static_assert(std::is_same_v<EventDataType<EventType::NewChan>::DataType, const std::uint16_t>);
+static_assert(std::is_same_v<EventDataType<EventType::PluginColor>::DataType, const std::uint32_t>);
+static_assert(std::is_same_v<EventDataType<EventType::Text_ChanName>::DataType, std::span<const std::uint8_t>>);
 
 // --------------------------------------------------------------------------------
 
