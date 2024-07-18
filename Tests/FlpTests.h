@@ -279,7 +279,71 @@ TEST(FlpEventReader, GoodEventData)
 
 //--------------------------------------------------------------------------------
 
-TEST(FlpEventHander, GrabVersion)
+TEST(FlpEventHander, Byte)
+{
+    auto file{ GetFileStream() };
+    flp::EventReader flp{ file };
+
+    flp::EventHandler handler;
+
+    const std::uint8_t expect{ 0x1 };
+    std::uint8_t got{ 0 };
+
+    handler.addHandler<flp::EventType::Registered>([&got](auto e)
+    {
+        got = e.data;
+    });
+    handler.dispatch(flp);
+
+    EXPECT_EQ(expect, got);
+}
+
+//--------------------------------------------------------------------------------
+
+TEST(FlpEventHander, Word)
+{
+    auto file{ GetFileStream() };
+    flp::EventReader flp{ file };
+
+    flp::EventHandler handler;
+
+    constexpr std::uint16_t expect{ 0 };
+    std::uint16_t got{ 1 };
+
+    handler.addHandler<flp::EventType::MainPitch>([&got](auto e)
+    {
+        got = e.data;
+    });
+
+    handler.dispatch(flp);
+
+    EXPECT_EQ(expect, got);
+}
+
+//--------------------------------------------------------------------------------
+
+TEST(FlpEventHander, Dword)
+{
+    auto file{ GetFileStream() };
+    flp::EventReader flp{ file };
+
+    flp::EventHandler handler;
+
+    constexpr std::uint32_t expectColor{ 0xB55B59 };
+    std::uint32_t color;
+
+    handler.addHandler<flp::EventType::FXColor>([&color](auto e)
+    {
+        color = e.data;
+    });
+    handler.dispatch(flp);
+
+    EXPECT_EQ(color, expectColor);
+}
+
+//--------------------------------------------------------------------------------
+
+TEST(FlpEventHander, Variable)
 {
     auto file{ GetFileStream() };
     flp::EventReader flp{ file };
@@ -289,7 +353,7 @@ TEST(FlpEventHander, GrabVersion)
     const std::string expectVersion{ "24.1.1.4234" };
     std::string gotVersion;
 
-    handler.addHandler<flp::EventType::Version, flp::EventSize::Variable>([&gotVersion](auto e)
+    handler.addHandler<flp::EventType::Version>([&gotVersion](auto e)
     {
         for(auto c : e.data)
         {
@@ -305,4 +369,3 @@ TEST(FlpEventHander, GrabVersion)
 }
 
 //--------------------------------------------------------------------------------
-
