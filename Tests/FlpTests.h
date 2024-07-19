@@ -5,7 +5,7 @@
 #include <gtest/gtest.h>
 #include "Flp/EventReader.h"
 #include "Flp/EventHandler.h"
-#include "Flp/FlpToolCommand.h"
+#include "FlpTool/FlpToolCommand.h"
 #include <fstream>
 #include <ranges>
 #include <sstream>

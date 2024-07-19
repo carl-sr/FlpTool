@@ -17,16 +17,28 @@ set(FlpSourceFiles
         Source/Flp/EventDispatcher.cpp
         Source/Flp/EventHandler.cpp
         Source/Flp/EventHandler.h
-        Source/Flp/FlpToolCommand.h
-        Source/Flp/FlpToolCommand.cpp
 )
 
 add_library(Flp STATIC ${FlpSourceFiles})
 
 #--------------------------------------------------------------------------------
 # command line tool
+set(FlpToolSourceFiles
+        Source/FlpTool/FlpToolCommand.h
+        Source/FlpTool/FlpToolCommand.cpp
+)
+add_library(FlpToolLib STATIC ${FlpToolSourceFiles})
+target_include_directories(FlpToolLib PUBLIC "Source")
+
 set(SourceFiles
         Source/main.cpp
+)
+add_executable(${PROJECT_NAME} ${SourceFiles})
+target_include_directories(${PROJECT_NAME} PUBLIC "Source")
+target_link_libraries(${PROJECT_NAME}
+        PUBLIC
+        Flp
+        FlpToolLib
 )
 
 #--------------------------------------------------------------------------------
@@ -59,4 +71,5 @@ target_link_libraries(${PROJECT_NAME}_Tests
         PUBLIC
         gtest
         Flp
+        FlpToolLib
 )
