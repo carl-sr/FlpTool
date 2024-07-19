@@ -5,6 +5,7 @@
 #include <gtest/gtest.h>
 #include "Flp/EventReader.h"
 #include "Flp/EventHandler.h"
+#include "Flp/FlpToolCommand.h"
 #include <fstream>
 #include <ranges>
 #include <sstream>
@@ -370,6 +371,18 @@ TEST(FlpEventHander, Variable)
 
     EXPECT_FALSE(gotVersion.empty());
     EXPECT_EQ(expectVersion, gotVersion);
+}
+
+//--------------------------------------------------------------------------------
+
+TEST(FlpToolCommand, FromString)
+{
+    std::vector<std::string> commandStrings{ "version" };
+    auto commandList = flp::StringListToFlpToolCommands(commandStrings);
+
+    auto contains = [&commandList](const flp::FlpToolCommand c) { return std::ranges::find(commandList, c) != commandList.end(); };
+
+    EXPECT_TRUE(contains(flp::FlpToolCommand::Version));
 }
 
 //--------------------------------------------------------------------------------
