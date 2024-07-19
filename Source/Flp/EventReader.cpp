@@ -172,21 +172,23 @@ void flp::EventReader::PrintAllEvents(EventReader& reader)
     {
         auto e = reader.getNextEvent();
 
+        const auto type{ static_cast<std::uint8_t>(e.getType()) };
+
         switch (flp::GetEventSize(e.getType()))
         {
         case flp::EventSize::Byte:
-            printf("0x%02x (BYTE): 0x%02x\n", e.getType(), e.getDataByte());
+            printf("0x%02x (BYTE): 0x%02x\n", type, e.getDataByte());
             break;
         case flp::EventSize::Word:
-            printf("0x%02x (WORD): 0x%04x\n", e.getType(), e.getDataWord());
+            printf("0x%02x (WORD): 0x%04x\n", type, e.getDataWord());
             break;
         case flp::EventSize::Dword:
-            printf("0x%02x (DWORD): 0x%08x\n", e.getType(), e.getDataDword());
+            printf("0x%02x (DWORD): 0x%08x\n", type, e.getDataDword());
             break;
         case flp::EventSize::Variable:
         {
-            printf("0x%02x (VAR): ", e.getType());
-            for (auto u : e.getDataVariable())
+            printf("0x%02x (VAR): ", type);
+            for (const auto u : e.getDataVariable())
                 printf("0x%02x ", u);
             printf("\n");
             break;

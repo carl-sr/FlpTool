@@ -15,6 +15,8 @@ set(FlpSourceFiles
         Source/Flp/FlpTypes.cpp
         Source/Flp/EventDispatcher.h
         Source/Flp/EventDispatcher.cpp
+        Source/Flp/EventHandler.cpp
+        Source/Flp/EventHandler.h
 )
 
 add_library(Flp STATIC ${FlpSourceFiles})

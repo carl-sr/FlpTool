@@ -31,13 +31,6 @@ bool flp::TypeMatchesSize(EventType type, EventSize size)
 
 // --------------------------------------------------------------------------------
 
-flp::EventSize flp::GetEventSize(EventType type)
-{
-    auto u8Type{ static_cast<std::uint8_t>(type) };
-    u8Type &= 0b11 << 6;
-
-    return static_cast<EventSize>(u8Type);
-}
 
 // --------------------------------------------------------------------------------
 
