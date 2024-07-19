@@ -26,6 +26,8 @@ add_library(Flp STATIC ${FlpSourceFiles})
 set(FlpToolSourceFiles
         Source/FlpTool/FlpToolCommand.h
         Source/FlpTool/FlpToolCommand.cpp
+        Source/FlpTool/FlpTool.h
+        Source/FlpTool/FlpTool.cpp
 )
 add_library(FlpToolLib STATIC ${FlpToolSourceFiles})
 target_include_directories(FlpToolLib PUBLIC "Source")
