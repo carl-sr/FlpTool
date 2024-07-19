@@ -8,7 +8,10 @@ std::vector<flp::FlpToolCommand> flp::StringListToFlpToolCommands(std::span<std:
     using CommandPair = std::pair<FlpToolCommand, const char *>;
     std::vector<CommandPair> commands
     {
-        std::make_pair(FlpToolCommand::Version, "version")
+        std::make_pair(FlpToolCommand::Registered, "registered"),
+        std::make_pair(FlpToolCommand::MainPitch, "mainpitch"),
+        std::make_pair(FlpToolCommand::PluginColor, "plugincolor"),
+        std::make_pair(FlpToolCommand::Version, "version"),
     };
 
     std::vector<FlpToolCommand> r;

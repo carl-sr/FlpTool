@@ -15,6 +15,10 @@ BEGIN_NAMESPACE_FLP
 
 enum class FlpToolCommand
 {
+
+    Registered,
+    MainPitch,
+    PluginColor,
     Version,
 };
 
