@@ -41,35 +41,39 @@ flp::FlpTool::FlpTool(const std::string& filename, const std::span<FlpToolComman
 
 void flp::FlpTool::handleRegistered(HandleableEvent<EventSize::Byte> e)
 {
-    printf("registered: 0x%02x\n", e.data);
+    m_outputJson[FlpToolCommandToString(FlpToolCommand::Registered)] = e.data;
 }
 
 // --------------------------------------------------------------------------------
 
 void flp::FlpTool::handleMainPitch(HandleableEvent<EventSize::Word> e)
 {
-    printf("main pitch: 0x%04x\n", e.data);
+    m_outputJson[FlpToolCommandToString(FlpToolCommand::MainPitch)]= e.data;
 }
 
 // --------------------------------------------------------------------------------
 
 void flp::FlpTool::handlePluginColor(HandleableEvent<EventSize::Dword> e)
 {
-    printf("plugin color: 0x%08x\n", e.data);
+    std::stringstream s;
+    s << "#" << std::hex << e.data;
+
+    const auto hexString = s.str();
+    m_outputJson[FlpToolCommandToString(FlpToolCommand::PluginColor)] = hexString;
 }
 
 // --------------------------------------------------------------------------------
 
 void flp::FlpTool::handleVersion(HandleableEvent<EventSize::Variable> e)
 {
-    std::span<const std::uint8_t> data{ e.data };
+    const std::span<const std::uint8_t> data{ e.data };
     std::string s;
     for(const auto d : data)
     {
         if (d)
             s += static_cast<char>(d);
     }
-    printf("version: %s\n", s.c_str());
+    m_outputJson[FlpToolCommandToString(FlpToolCommand::Version)] = s;
 }
 
 // --------------------------------------------------------------------------------

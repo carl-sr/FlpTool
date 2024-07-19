@@ -15,4 +15,6 @@ int main()
     };
     flp::FlpTool f{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp", commands };
 
+    std::cout << to_string(f.m_outputJson) << std::endl;
+
 }

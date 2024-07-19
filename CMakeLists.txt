@@ -22,7 +22,7 @@ set(FlpSourceFiles
 add_library(Flp STATIC ${FlpSourceFiles})
 
 #--------------------------------------------------------------------------------
-# command line tool
+# FlpToolLib
 set(FlpToolSourceFiles
         Source/FlpTool/FlpToolCommand.h
         Source/FlpTool/FlpToolCommand.cpp
@@ -30,8 +30,14 @@ set(FlpToolSourceFiles
         Source/FlpTool/FlpTool.cpp
 )
 add_library(FlpToolLib STATIC ${FlpToolSourceFiles})
-target_include_directories(FlpToolLib PUBLIC "Source")
 
+add_subdirectory(External/nlohmann_json)
+
+target_include_directories(FlpToolLib PUBLIC "Source")
+target_link_libraries(FlpToolLib PUBLIC nlohmann_json::nlohmann_json)
+
+#--------------------------------------------------------------------------------
+# FlpTool
 set(SourceFiles
         Source/main.cpp
 )
