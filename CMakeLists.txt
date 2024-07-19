@@ -62,6 +62,7 @@ add_subdirectory(External/googletest)
 set(TestSourceFiles
         Tests/main.cpp
         Tests/FlpTests.h
+        Tests/FlpToolTests.h
 )
 
 add_executable(${PROJECT_NAME}_Tests ${TestSourceFiles})
