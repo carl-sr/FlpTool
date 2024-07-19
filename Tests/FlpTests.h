@@ -291,6 +291,7 @@ TEST(FlpEventHander, Byte)
 
     handler.addHandler<flp::EventType::Registered>([&got](auto e)
     {
+        EXPECT_EQ(e.type, flp::EventType::Registered);
         got = e.data;
     });
     handler.dispatch(flp);
@@ -312,6 +313,7 @@ TEST(FlpEventHander, Word)
 
     handler.addHandler<flp::EventType::MainPitch>([&got](auto e)
     {
+        EXPECT_EQ(e.type, flp::EventType::MainPitch);
         got = e.data;
     });
 
@@ -334,6 +336,7 @@ TEST(FlpEventHander, Dword)
 
     handler.addHandler<flp::EventType::FXColor>([&color](auto e)
     {
+        EXPECT_EQ(e.type, flp::EventType::FXColor);
         color = e.data;
     });
     handler.dispatch(flp);
@@ -355,6 +358,7 @@ TEST(FlpEventHander, Variable)
 
     handler.addHandler<flp::EventType::Version>([&gotVersion](auto e)
     {
+        EXPECT_EQ(e.type, flp::EventType::Version);
         for(auto c : e.data)
         {
             if (c)
