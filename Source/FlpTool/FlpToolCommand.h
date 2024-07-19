@@ -24,7 +24,7 @@ enum class FlpToolCommand
 
 // --------------------------------------------------------------------------------
 
-std::vector<FlpToolCommand> StringListToFlpToolCommands(std::span<std::string> argv);
+std::vector<FlpToolCommand> StringListToFlpToolCommands(std::span<const std::string> argv);
 
 // --------------------------------------------------------------------------------
 

@@ -10,10 +10,26 @@ flp::FlpTool::FlpTool(const std::string& filename, const std::span<FlpToolComman
 {
     EventHandler handler;
 
-    handler.addHandler<EventType::Registered>([this](auto e){ handleRegistered(e); });
-    handler.addHandler<EventType::MainPitch>([this](auto e){ handleMainPitch(e); });
-    handler.addHandler<EventType::PluginColor>([this](auto e){ handlePluginColor(e); });
-    handler.addHandler<EventType::Version>([this](auto e){ handleVersion(e); });
+    for(const auto &c : commands)
+    {
+#define EVENT_CASE(type, fn) case FlpToolCommand::type: handler.addHandler<EventType::type>([this](auto e) { fn(e); }); break;
+        switch(c)
+        {
+            // BYTE
+        EVENT_CASE(Registered, handleRegistered)
+
+            // WORD
+        EVENT_CASE(MainPitch, handleMainPitch)
+
+            // DWORD
+        EVENT_CASE(PluginColor, handlePluginColor)
+
+            // VARIABLE
+        EVENT_CASE(Version, handleVersion)
+
+        default: break;
+        }
+    }
 
     std::ifstream stream{ filename, std::ios::binary };
     EventReader reader{ stream };

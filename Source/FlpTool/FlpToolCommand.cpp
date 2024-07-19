@@ -3,7 +3,7 @@
 
 // --------------------------------------------------------------------------------
 
-std::vector<flp::FlpToolCommand> flp::StringListToFlpToolCommands(std::span<std::string> argv)
+std::vector<flp::FlpToolCommand> flp::StringListToFlpToolCommands(const std::span<const std::string> argv)
 {
     using CommandPair = std::pair<FlpToolCommand, const char *>;
     std::vector<CommandPair> commands
