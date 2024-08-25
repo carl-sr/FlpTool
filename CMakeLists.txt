@@ -58,3 +58,5 @@ target_link_libraries(${PROJECT_NAME}_Tests
         gtest
         Flp
 )
+
+add_compile_definitions("BIN_DIR=\"${CMAKE_SOURCE_DIR}/Tests/flpbin\"")

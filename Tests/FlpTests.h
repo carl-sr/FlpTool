@@ -23,7 +23,7 @@ inline std::ifstream GetFileStream()
     //     - one mixer track{ color: #595BB5, name: 'MIXER TRACK' }
     //     - Fruity Limiter(default)
 
-    std::ifstream file{ "D:/code/kaitai/flp/FlpTool/Tests/flpbin/a.flp", std::ios::beg | std::ios::binary };
+    std::ifstream file{ BIN_DIR "/a.flp", std::ios::binary };
     return file;
 }
 
